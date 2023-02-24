@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TravelPlaces</title>
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/webpixels.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/fontawesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/styles.css" asp-append-version="true" />
+    <link href="./PlayfairDisplay.ttf" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-0 py-3">
+        <div class="container-xl max-w-screen-xl">
+          <!-- Logo -->
+          <a class="navbar-brand" href="./">
+            <img src="./icon.png" class="h-8" alt="..." />
+            <span class="text-md p-2 text-lg-white-50-hover text-white">Travel Places</span>
+          </a>
+          <!-- Navbar toggle -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- Collapse -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <!-- Nav -->
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="./">Home</a>
+              </li>
+            </ul>
+            <form action="./" method="get" style="width: 60%; display: flex; justify-content: center">
+              <div class="input-group" style="width: 70%; float: right">
+                <input class="form-control" type="search" name="search" id="search" placeholder="Search Place, City or State" aria-label="search" />
+                <button type="submit" value="submit" class="input-group-text" id="basic-addon2">Search</button>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <div class="navbar-nav ms-lg-4 d-none" id="logoutcontainer">
+                <a class="nav-item nav-link" style="padding: 0.5rem" href="./admin/"> Hello Prabhat </a>
+
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <button id="logout" onClick="logout(event)" class="btn btn-sm btn-white w-full w-lg-auto">Logout</button>
+                </div>
+              </div>
+              <div class="navbar-nav ms-lg-4" id="logincontainer">
+                <div class="">
+                  <a class="nav-item nav-link" href="./login.html">Sign in</a>
+                </div>
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <a class="btn btn-sm btn-white w-full w-lg-auto" href="./register.html"> Register </a>
+                </div>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="container">
+      <main role="main" class="pb-3">
+        <div class="place-grid"></div>
+      </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5">
+      <div class="container">&copy; 2023 - TravelPlaces - <a>Privacy</a></div>
+    </footer>
+    <script src="./lib/jquery/dist/jquery.min.js"></script>
+    <script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/site.js" asp-append-version="true"></script>
+    <script src="./js/utilities.js" asp-append-version="true"></script>
+
+    <script>
+      $(document).ready(function () {
+        const urlparams = new URLSearchParams(window.location.search);
+        let searchparam = urlparams.get("search");
+        searchparam = searchparam ? `?search=${searchparam}` : "";
+        submitFormData(generatePlaces, console.log, "/Place" + searchparam);
+      });
+
+      const generatePlaces = (places) => {
+        const placegrid = document.querySelector(".place-grid");
+        placegrid.innerHTML = "";
+        if (places.length > 0) {
+          places.forEach((place) => {
+            placegrid.innerHTML += `
+            <a
+                class="place-card"
+                href="./pagedetails.html?id=${place.placeId}"
+            >
+                <div class="place-card__cover">
+                    <img
+                    src="${place.images ? place.images : "https://raw.githubusercontent.com/prabhatpushp/project-related/main/TravelPlaces/images/gatewayofindia%20(1).jpg"}"
+                    alt="Place cover"
+                    />
+
+                <div class="place-content">
+                    <div class="title">${place.name}</div>
+                    <div class="content-container">
+                    <div class="address">${place.city}, ${place.state}</div>
+                    <div class="ratings">${place.placeRating}⭐</div>
+                    </div>
+                </div>
+                </div>
+            </a>
+          `;
+          });
+        } else {
+          placegrid.innerHTML = "<p>There were no places found</p>";
+        }
+      };
+    </script>
+  </body>
+</html>

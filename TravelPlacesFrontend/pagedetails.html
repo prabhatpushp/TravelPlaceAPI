@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TravelPlaces</title>
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/webpixels.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/fontawesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="./css/styles.css" asp-append-version="true" />
+    <link href="./PlayfairDisplay.ttf" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-0 py-3">
+        <div class="container-xl max-w-screen-xl">
+          <!-- Logo -->
+          <a class="navbar-brand" href="./">
+            <img src="./icon.png" class="h-8" alt="..." />
+            <span class="text-md p-2 text-lg-white-50-hover text-white">Travel Places</span>
+          </a>
+          <!-- Navbar toggle -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- Collapse -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <!-- Nav -->
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="./">Home</a>
+              </li>
+            </ul>
+            <form action="./" method="get" style="width: 60%; display: flex; justify-content: center">
+              <div class="input-group" style="width: 70%; float: right">
+                <input class="form-control" type="search" name="search" id="search" placeholder="Search Place, City or State" aria-label="search" />
+                <button type="submit" value="submit" class="input-group-text" id="basic-addon2">Search</button>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <div class="navbar-nav ms-lg-4 d-none" id="logoutcontainer">
+                <a class="nav-item nav-link" style="padding: 0.5rem" href="./admin/"> Hello Prabhat </a>
+
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <form>
+                    <button id="logout" type="submit" class="btn btn-sm btn-white w-full w-lg-auto" asp-area="" asp-controller="Login" asp-action="Logout">Logout</button>
+                  </form>
+                </div>
+              </div>
+              <div class="navbar-nav ms-lg-4" id="logincontainer">
+                <div class="">
+                  <a class="nav-item nav-link" href="./login.html">Sign in</a>
+                </div>
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <a class="btn btn-sm btn-white w-full w-lg-auto" href="./register.html"> Register </a>
+                </div>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="container">
+      <main role="main" class="pb-3">
+        <div id="placecontainer" class="panel" style="margin-bottom: 100px"></div>
+      </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5">
+      <div class="container">&copy; 2023 - TravelPlaces - <a>Privacy</a></div>
+    </footer>
+    <script src="./lib/jquery/dist/jquery.min.js"></script>
+    <script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/site.js" asp-append-version="true"></script>
+    <script src="./js/utilities.js" asp-append-version="true"></script>
+
+    <script>
+      $(document).ready(function () {
+        //   ShowAllPlaces();
+        const urlparams = new URLSearchParams(window.location.search);
+        let placeid = urlparams.get("id");
+        placeid = placeid ? `/${placeid}` : "";
+        submitFormData(generatePlace, console.log, "/Place" + placeid);
+      });
+
+      const generatePlace = (place) => {
+        console.log(place);
+        const placecontainer = document.querySelector("#placecontainer");
+        placecontainer.innerHTML = "";
+
+        if (place) {
+          let images = "";
+          if (place.placeImages.length > 0) {
+            place.placeImages.forEach((image) => {
+              images += `<img src="${image.imageUrl}" alt="Place cover" style="margin: 5px 0;"/>`;
+            });
+            // console.log(images);
+          } else {
+            images = `<img src="https://raw.githubusercontent.com/prabhatpushp/project-related/main/TravelPlaces/images/gatewayofindia%20(1).jpg" alt="Place cover" />`;
+          }
+          let providers = "";
+          if (place.providers.length > 0) {
+            providers = `<div class="providers-container">
+                            <h2 style="margin-bottom: 10px; font-size: 1.2rem; font-weight: 500;">Service Providers</h2>`;
+            providers += createBootstrapTable(["Name", "Email", "Phone", "Service", "Ratings"], ["name", "email", "phone", "providerType", "providerRating"], place.providers);
+            providers += `</div>`;
+            // console.log(providers);
+          } else {
+            providers = `<p>There are no providers available</p>`;
+          }
+
+          placecontainer.innerHTML += `
+          <div class="panel_img">
+                    ${images}
+            </div>
+
+            <div class="panel_content">
+                <div class="panel_top" style="width: fit-content; border: 1px solid #eaeaea; border-radius: 2px; padding-left: 15px;">
+                <span>${place.city},</span>
+                <span>${place.state},</span>
+                <span>${place.country}</span>
+                <span style="padding:5px 10px 5px 15px; width: fit-content; display: inline-block; background-color: #fafafa; margin-left: 20px; font-weight: 700; font-size: 1rem; border-left: 1px solid #eaeaea;">${place.placeRating} ⭐</span>
+                </div>
+
+                <h1>${place.name}</h1>
+                <p>
+                        ${place.description}
+                </p>
+                ${providers}
+            </div>
+          `;
+        } else {
+          placecontainer.innerHTML = "<p>There were no place found with given PlaceID</p>";
+        }
+      };
+    </script>
+  </body>
+</html>

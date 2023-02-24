@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TravelPlaces</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="../css/webpixels.css" asp-append-version="true" />
+    <link rel="stylesheet" href="../css/fontawesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="../css/styles.css" asp-append-version="true" />
+    <link href="../PlayfairDisplay.ttf" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-0 py-3">
+        <div class="container-xl max-w-screen-xl">
+          <!-- Logo -->
+          <a class="navbar-brand" href="../">
+            <img src="../icon.png" class="h-8" alt="..." />
+            <span class="text-md p-2 text-lg-white-50-hover text-white">Travel Places</span>
+          </a>
+          <!-- Navbar toggle -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- Collapse -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <!-- Nav -->
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="../">Home</a>
+              </li>
+            </ul>
+            <form action="../" method="get" style="width: 60%; display: flex; justify-content: center">
+              <div class="input-group" style="width: 70%; float: right">
+                <input class="form-control" type="search" name="search" id="search" placeholder="Search Place, City or State" aria-label="search" />
+                <button type="submit" value="submit" class="input-group-text" id="basic-addon2">Search</button>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <div class="navbar-nav ms-lg-4 d-none" id="logoutcontainer">
+                <a class="nav-item nav-link" style="padding: 0.5rem" href="../admin/"> Hello Prabhat </a>
+
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <button id="logout" onClick="logout(event)" class="btn btn-sm btn-white w-full w-lg-auto" asp-area="">Logout</button>
+                </div>
+              </div>
+              <div class="navbar-nav ms-lg-4" id="logincontainer">
+                <div class="">
+                  <a class="nav-item nav-link" href="../login.html">Sign in</a>
+                </div>
+                <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
+                  <a class="btn btn-sm btn-white w-full w-lg-auto" href="../register.html"> Register </a>
+                </div>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container" style="padding: 0">
+        <ul class="nav nav-pills" style="padding: 10px 0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="./">Places</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./images.html">Images</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./providers.html">Service Provider</a>
+          </li>
+          <!--<li class="nav-item">
+            <a class="nav-link" href="./placeprovider.html">Place Provider</a>
+          </li>
+          -->
+        </ul>
+        <hr style="color: #999; margin: 0 0 40px 0" />
+      </div>
+    </header>
+    <div class="container">
+      <main role="main" id="main" class="pb-3"></main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5">
+      <div class="container">&copy; 2023 - TravelPlaces - <a>Privacy</a></div>
+    </footer>
+    <script src="../lib/jquery/dist/jquery.min.js"></script>
+    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/site.js" asp-append-version="true"></script>
+    <script src="../js/utilities.js" asp-append-version="true"></script>
+
+    <script>
+      $(document).ready(function () {
+        const urlparams = new URLSearchParams(window.location.search);
+        let placeid = urlparams.get("id");
+        placeid = placeid ? `/${placeid}` : "";
+        submitFormData(generatePlace, console.log, "/Place" + placeid);
+      });
+
+      const generatePlace = (place) => {
+        console.log(place);
+        const placecontainer = document.querySelector("#main");
+
+        let placestring = `<h4>TouristPlace</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <form onSubmit="handleSubmit(event)" id="editform">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group" hidden>
+                        <label for="PlaceId" class="control-label">Place ID</label>
+                        <input id="PlaceId" name="PlaceId" value="${place.placeId}" class="form-control" />
+                        <span asp-validation-for="PlaceId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        <input id="Name" name="name" value="${place.name}" class="form-control" />
+                        <span validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Description" class="control-label">Description</label>
+                        <textarea id="Description" name="Description" rows="4" cols="50" class="form-control">${place.description}</textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="City" class="control-label">City</label>
+                        <input id="City" name="city" type="text" value="${place.city}" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="State" class="control-label">State</label>
+                        <input id="State" name="State" value="${place.state}" class="form-control" />
+                        <span asp-validation-for="State" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Country" class="control-label">Country</label>
+                        <input Country="Country" name="Country" value="${place.country}" class="form-control" />
+                        <span asp-validation-for="Country" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="PlaceRating" class="control-label">Place Rating</label>
+                        <input id="PlaceRating" name="PlaceRating" value="${place.placeRating}" class="form-control" />
+                        <span asp-validation-for="PlaceRating" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-md btn-success w-full w-lg-auto mt-4 mb-5" />
+                    </div>
+                </form>
+            </div>
+        </div>
+      <div>
+          <a class="btn btn-sm btn-danger w-full w-lg-auto me-2" href="./delete.html?id=${place.placeId}">Delete</a>
+          <a class="btn btn-sm btn-white w-full w-lg-auto" href="./">Back to List</a>
+      </div>
+      `;
+        placecontainer.innerHTML = placestring;
+      };
+      const handleSubmit = (event) => {
+        const urlparams = new URLSearchParams(window.location.search);
+        let placeid = urlparams.get("id");
+        placeid = placeid ? `/${placeid}` : "";
+        event.preventDefault();
+        submitFormData(
+          (res) => {
+            window.location.href = "/admin/";
+          },
+          console.log,
+          "/Place" + placeid,
+          [],
+          "#editform",
+          "PUT"
+        );
+      };
+    </script>
+  </body>
+</html>
